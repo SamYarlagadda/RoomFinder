@@ -1,0 +1,8 @@
+{
+    "scripts": {
+        "frontend-start": "cd frontend && npm run dev",
+        "backend-start": "cd backend && node server js",
+        "db-start": "cd backend && db:generate",
+        "rabbitmq-start": "cd.. && rabbitmq-setup.sh"
+    }
+}
