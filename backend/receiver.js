@@ -1,7 +1,7 @@
 const amqp = require('amqplib');
 
 async function receiveMessage() {
-  const connection = await amqp.connect('amqp://10.241.36.124');
+  const connection = await amqp.connect('amqp:ssy22:ssy22@10.241.141.94:5672/ssy22');
   const channel = await connection.createChannel();
 
   const queue = 'messages';

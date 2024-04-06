@@ -2,7 +2,7 @@ const amqp = require('amqplib');
 const port = 5672; // Set your desired port number
 
 async function sendMessage() {
-  const connection = await amqp.connect('amqp://10.241.36.124');
+  const connection = await amqp.connect('amqp://ssy22:ssy22@10.241.141.94:5672/ssy22');
   const channel = await connection.createChannel();
 
   const queue = 'messages';
