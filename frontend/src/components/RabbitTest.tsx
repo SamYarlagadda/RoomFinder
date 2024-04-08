@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import mqtt, { MqttClient } from 'mqtt';
 
 type RabbitOptions = {
@@ -11,11 +11,11 @@ export const RabbitTest = () => {
   const [client, setClient] = useState<MqttClient | null>(null);
   const [connectStatus, setConnectStatus] = useState('Connecting');
 
-  const host = 'mqtt://ssy22:ssy22@10.241.141.94:1883/ssy22';
+  const host = 'mqtt://ssy22:ssy22@localhost:1883';
   const mqttOption = {
     username: 'ssy22',
     password: 'ssy22',
-    keepalive: 60
+    keepalive: 5000
   };
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const RabbitTest = () => {
         console.log(payload);
       });
     }
-  }, [client]);
+  }, []);
 
   const sendMessage = () => {
     if (client) {
