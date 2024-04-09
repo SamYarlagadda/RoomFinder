@@ -1,13 +1,23 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Room Finder</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <meta charset="UTF-8" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="mystyle.css">
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+<script type="module">
+  import.meta.env.VITE_SERVER_URL = 'http://localhost:7007'; // Specify the correct port
+</script>
+</head>
+<body>
+
+<div class="login-page">
+  <div class="form">
+    <form class="login-form">
+      <p class="text" style="font-weight:bold; font: size 70px;;"> NJIT Room Search Landing Page</p>
+      <a href="login.php" >Login</a>
+      <a href="register.php">Register</a>
+    </form>
+  </div>
+</div>
+</body>
 </html>
