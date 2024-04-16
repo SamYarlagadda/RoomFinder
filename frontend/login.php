@@ -11,7 +11,7 @@
             use PhpAmqpLib\Connection\AMQPStreamConnection;
             use PhpAmqpLib\Message\AMQPMessage;
 
-            $connection = new AMQPStreamConnection('10.241.141.94', '5672', 'ssy22', 'ssy22');
+            $connection = new AMQPStreamConnection('10.241.141.94', '5672', 'ssy22', 'ssy22', 'ssy22');
             $channel = $connection->channel();
             $channel->queue_declare('login_request', false, false, false, false);
             $callback_queue = uniqid('login_response');

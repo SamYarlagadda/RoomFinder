@@ -1,11 +1,9 @@
-
 {
   "scripts": {
   "start": "npm run dev",
   "build": "webpack --mode production"
  },
- "require": {
-  "php-amqplib/php-amqplib": "^3.2"
-
-}
+  "require": {
+    "php-amqplib/php-amqplib": ">=2.0"
+  }
 }

@@ -99,7 +99,7 @@
     <div style="padding-left:16px">
       <h2>NJIT Room Search</h2>
       <p>Welcome to NJIT Room Searcher, this program can be used to find empty classrooms around the NJIT Campus</p>
-      <p>Hello World :)</p>
+      <p>Hello World</p>
     </div>
     <div class="dropdown">
       <button onclick="myFunction()" class="dropbtn">Pick Building Name</button>
