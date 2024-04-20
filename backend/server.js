@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const app = express()
 const cors = require('cors');
 const bodyParser = require('body-parser');
+var amqp = require('amqplib/callback_api');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -92,6 +93,24 @@ app.post('/login', (req, res) => {
       res.status(404).send('User not found');
     }
   });
+});
+
+// Express Backend
+
+amqp.connect('amqp://ssy22:ssy22@10.241.141.94:5672/ssy22', function(error0, connection) {
+    if (error0) {
+        throw error0;
+    }
+    connection.createChannel(function(error1, channel) {
+        if (error1) {
+            throw error1;
+        }
+        var queue = 'backend';
+
+        channel.assertQueue(queue, {
+            durable: false
+        });
+    });
 });
 
 

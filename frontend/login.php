@@ -13,9 +13,7 @@
 
             $connection = new AMQPStreamConnection('10.241.141.94', '5672', 'ssy22', 'ssy22', 'ssy22');
             $channel = $connection->channel();
-            $channel->queue_declare('login_request', false, false, false, false);
-            $callback_queue = uniqid('login_response');
-            $channel->queue_declare($callback_queue, false, false, false, false);
+            $channel->queue_declare('frontend', false, false, false, false);
             
             $channel->close();
             $connection->close();
