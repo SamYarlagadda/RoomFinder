@@ -32,7 +32,21 @@
 
 
               $channel->basic_publish($msg, '', 'login_request');
+                // read repsonse, if 'success' redirect to home
+                $channel->basic_consume($callback_queue, '', false, true, false, false, function ($msg) {
+                  if ($msg->body === 'success') {
+                      $_SESSION['email'] = $_POST['email'];
+                      header('Location: /home.php');
+                  }
+                  else {
+                      echo '<div class="alert alert-danger" role="alert">Invalid email or password</div>';
+                  }
+                  
+              });
 
+              $channel->wait(null, false, 5);
+              $channel->queue_delete($callback_queue);
+          }
 
 
             $channel->close();
