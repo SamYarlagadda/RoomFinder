@@ -1,22 +1,26 @@
-const amqp = require('amqplib');
-const port = 5672; // Set your desired port number
+const amqp = require('amqplib/callback_api');
 
-async function sendMessage() {
-  const connection = await amqp.connect('amqp://ssy22:ssy22@10.241.141.94:5672/ssy22');
-  const channel = await connection.createChannel();
+function sendToBackend(message) {
+    // Replace 'localhost' with your RabbitMQ server IP
+    amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connection) {
+        if (error0) {
+            throw error0;
+        }
+        connection.createChannel(function(error1, channel) {
+            if (error1) {
+                throw error1;
+            }
 
-  const queue = 'messages';
+            let queue = 'backend_queue';
 
-  await channel.assertQueue(queue, { durable: false });
-  const message = 'Hello, RabbitMQ!';
+            channel.assertQueue(queue, {
+                durable: false
+            });
 
-  channel.sendToQueue(queue, Buffer.from(message));
-  console.log(" [x] Sent %s", message);
-
-  setTimeout(() => {
-    connection.close();
-    process.exit(0);
-  }, 500);
+            channel.sendToQueue(queue, Buffer.from(message));
+            console.log(" [x] Sent %s", message);
+        });
+    });
 }
 
-sendMessage().catch(console.error);
+module.exports = sendToBackend; // Export the function

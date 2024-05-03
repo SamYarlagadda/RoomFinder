@@ -1,61 +1,51 @@
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Replace 'localhost' with your RabbitMQ server IP, and 5672 with your port if it's not the default one
+    $connection = new AMQPStreamConnection('10.241.141.94', 5672, 'ssy22', 'ssy22', 'ssy22');
+    $channel = $connection->channel();
+
+    // Declare a queue for us to send to
+    $channel->queue_declare('frontend_queue', false, false, false, false);
+
+    $username = $_POST["username"];
+    $njit_id = $_POST["njit_id"];
+    $password = $_POST["password"];
+
+    // Prepare the message
+    $message_data = array(
+        'username' => $username,
+        'njit_id' => $njit_id,
+        'password' => $password,
+    );
+
+    // Convert the message data to JSON
+    $message_json = json_encode($message_data);
+
+    // Create a new AMQP message
+    $msg = new AMQPMessage($message_json);
+
+    // Publish the message
+    $channel->basic_publish($msg, '', 'frontend_queue');
+
+    $channel->close();
+    $connection->close();
+}
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="mystyle.css">
   </head>
-  <body>
-        <?php
-            require_once __DIR__ . '/vendor/autoload.php';
-            use PhpAmqpLib\Connection\AMQPStreamConnection;
-            use PhpAmqpLib\Message\AMQPMessage;
-
-            $connection = new AMQPStreamConnection('10.241.141.94', '5672', 'ssy22', 'ssy22', 'ssy22');
-            $channel = $connection->channel();
-            $channel->queue_declare('login_request', false, false, false, false);
-            $callback_queue = uniqid('login_response');
-            $channel->queue_declare($callback_queue, false, false, false, false);
-            
-
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-              $username = $_POST['username'];
-              $id = $_POST['njit_id'];
-              $password = md5($password);
-
-              $data = [
-                  'username' => $username,
-                  'password' => $password,
-                  'njit_id' => $id
-              ];
-
-              $msg = new AMQPMessage(json_encode($data), ['reply_to' => $callback_queue]);
-
-
-              $channel->basic_publish($msg, '', 'login_request');
-                // read repsonse, if 'success' redirect to home
-                $channel->basic_consume($callback_queue, '', false, true, false, false, function ($msg) {
-                  if ($msg->body === 'success') {
-                      $_SESSION['email'] = $_POST['email'];
-                      header('Location: /home.php');
-                  }
-                  else {
-                      echo '<div class="alert alert-danger" role="alert">Invalid email or password</div>';
-                  }
-                  
-              });
-
-              $channel->wait(null, false, 5);
-              $channel->queue_delete($callback_queue);
-          }
-
-
-            $channel->close();
-            $connection->close();
-            ?>
-            
+  <body>    
     <div class="page-container">
       <div class="form">
-        <form class="login-form" action="/login" method="post">
+        <form class="login-form" action="" method="post">
           <p class="text" style="font-weight:bold; font: size 70px;;"> NJIT Room Search Login Page</p>
           <input type="text" id="username" name="username" placeholder="Username" required/>
           <input type="njit_id" id="njit_id" name="njit_id" placeholder="NJIT ID" required/>
