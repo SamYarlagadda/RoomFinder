@@ -1,37 +1,53 @@
-const express = require('express');
-const app = express();
-var mysql = require('mysql');
-var amqp = require('amqplib/callback_api');
+const amqp = require('amqplib/callback_api');
+const mysql = require('mysql');
 
-// Create a MySQL connection pool
-var pool  = mysql.createPool({
-  connectionLimit : 10,
-  host            : '10.241.214.202',
-  user            : 'rp855',
-  password        : 'rp855',
-  database        : 'RoomFinderDB'
+// Create a new pool instance
+const pool = mysql.createPool({
+  host: '10.241.214.202',
+  user: 'rp855',
+  password: 'rp855',
+  database: 'RoomFinderDB',
+  port: '3306',
 });
 
-// Listen for changes in the database
-pool.query('SELECT * FROM users', function(err, result) {
-  if (err) throw err;
+amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connection) {
+    if (error0) {
+        throw error0;
+    }
+    connection.createChannel(function(error1, channel) {
+        if (error1) {
+            throw error1;
+        }
 
-  // Connect to RabbitMQ
-  amqp.connect('amqp://ssy22:ssy22@10.241.141.94:5672/ssy22', function(err, conn) {
-    if (err) throw err;
+        let dbQueue = 'db_queue';
 
-    // Create a channel
-    conn.createChannel(function(err, ch) {
-      if (err) throw err;
+        channel.assertQueue(dbQueue, {
+            durable: false
+        });
 
-      var queue = 'db';
+        console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", dbQueue);
 
-      // Assert the queue
-      ch.assertQueue(queue, {durable: false});
+        channel.consume(dbQueue, function(msg) {
+            console.log(" [x] Received %s", msg.content.toString());
 
-      // Publish the changes to the queue
-      ch.sendToQueue(queue, new Buffer.from(JSON.stringify(result)));
-      console.log('Sent changes to RabbitMQ');
+            // Parse the message content to JSON
+            let credentials = JSON.parse(msg.content.toString());
+
+            // Query the database
+            pool.query('SELECT * FROM users WHERE username = ? AND njit_id = ? AND password = ?', [credentials.username, credentials.njit_id, credentials.password], (err, results) => {
+                if(err) {
+                    console.log(err);
+                } else {
+                    if(results.length > 0) {
+                        console.log('User exists');
+                    } else {
+                        console.log('User does not exist');
+                    }
+                }
+            });
+
+        }, {
+            noAck: true
+        });
     });
-  });
 });
