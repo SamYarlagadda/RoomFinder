@@ -1,14 +1,13 @@
 const amqp = require('amqplib/callback_api');
 const mysql = require('mysql');
-require('dotenv').config();
 
 // Create a new pool instance
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+    host: '10.241.100.23',
+    user: 'rp855',
+    password: 'rp855',
+    database: 'RoomFinderDB',
+    port: 3306,
 });
 
 amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connection) {
