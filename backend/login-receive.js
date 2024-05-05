@@ -2,8 +2,8 @@ const amqp = require('amqplib/callback_api');
 
 // Replace 'localhost' with your RabbitMQ server IP
 const url = 'amqp://ssy22:ssy22@10.241.141.94/ssy22';
-const frontendQueue = 'frontend_queue';
-const backendQueue = 'backend_queue';
+const frontendQueue = 'frontend_login';
+const backendQueue = 'backend_login';
 
 amqp.connect(url, function(error0, connection) {
     if (error0) {

@@ -3,11 +3,11 @@ const mysql = require('mysql');
 
 // Create a new pool instance
 const pool = mysql.createPool({
-  host: '10.241.214.202',
-  user: 'rp855',
-  password: 'rp855',
-  database: 'RoomFinderDB',
-  port: '3306',
+    host: '10.241.100.23',
+    user: 'rp855',
+    password: 'rp855',
+    database: 'RoomFinderDB',
+    port: 3306,
 });
 
 amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connection) {
@@ -19,7 +19,7 @@ amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connecti
             throw error1;
         }
 
-        let dbQueue = 'db_queue';
+        let dbQueue = 'db_register';
 
         channel.assertQueue(dbQueue, {
             durable: false
@@ -34,7 +34,7 @@ amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connecti
             let credentials = JSON.parse(msg.content.toString());
 
             // Query the database
-            pool.query('SELECT * FROM users WHERE username = ? AND njit_id = ? AND password = ?', [credentials.username, credentials.njit_id, credentials.password], (err, results) => {
+            pool.query('SELECT * FROM users WHERE username = ? AND njit_id = ?', [credentials.username, credentials.njit_id], (err, results) => {
                 if(err) {
                     console.log(err);
                 } else {
@@ -42,6 +42,14 @@ amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connecti
                         console.log('User exists');
                     } else {
                         console.log('User does not exist');
+                        // Insert the new user into the database
+                        pool.query('INSERT INTO users SET ?', credentials, (err, res) => {
+                            if(err) {
+                                console.log('Error inserting new user:', err);
+                            } else {
+                                console.log('Inserted new user with id:', res.insertId);
+                            }
+                        });
                     }
                 }
             });

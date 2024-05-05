@@ -9,8 +9,8 @@ amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connecti
             throw error1;
         }
 
-        let backendQueue = 'backend_queue';
-        let dbQueue = 'db_queue';
+        let backendQueue = 'backend_login';
+        let dbQueue = 'db_login';
 
         channel.assertQueue(backendQueue, {
             durable: false

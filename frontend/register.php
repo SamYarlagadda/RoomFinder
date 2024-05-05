@@ -1,3 +1,50 @@
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Replace 'localhost' with your RabbitMQ server IP, and 5672 with your port if it's not the default one
+    $connection = new AMQPStreamConnection('10.241.141.94', 5672, 'ssy22', 'ssy22', 'ssy22');
+    $channel = $connection->channel();
+
+    // Declare a queue for us to send to
+    $channel->queue_declare('frontend_register', false, false, false, false);
+
+    $first_name = $_POST["first_name"];
+    $last_name = $_POST["last_name"];
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $njit_id = $_POST["njit_id"];
+    $email = $_POST["email_address"];
+    $dob = $_POST["date_of_birth"];
+    $phone_number = $_POST["phone_number"];
+
+    // Prepare the message
+    $message_data = array(
+        'first_name' => $first_name,
+        'last_name' => $last_name,
+        'username' => $username,
+        'password' => $password,
+        'njit_id' => $njit_id,
+        'email_address' => $email,
+        'date_of_birth' => $dob,
+        'phone_number' => $phone_number,
+    );
+
+    // Convert the message data to JSON
+    $message_json = json_encode($message_data);
+
+    // Create a new AMQP message
+    $msg = new AMQPMessage($message_json);
+
+    // Publish the message
+    $channel->basic_publish($msg, '', 'frontend_register');
+
+    $channel->close();
+    $connection->close();
+}
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,24 +52,9 @@
 <link rel="stylesheet" href="mystyle.css">
 </head>
 <body>
-<?php
-        require_once __DIR__ . '/vendor/autoload.php';
-        use PhpAmqpLib\Connection\AMQPStreamConnection;
-        use PhpAmqpLib\Message\AMQPMessage;
-
-          $first_name = addslashes($_POST['first_name']);
-          $last_name = addslashes($_POST['last_name']);
-          $username = addslashes($_POST['username']);
-          $njit_id = addslashes($_POST['njit_id']);
-          $password = addslashes($_POST['password']);
-          $password = md5($password);
-          $email = addslashes($_POST['email']);
-          $phone_number = addslashes($_POST['phone_number']);
-          $dob = addslashes($_POST['dob']); ?>
-
 <div class="page-container">
     <div class="form">
-      <form action="/register" method="post" class="login-form">
+      <form class="login-form" action ="" method="post">
         <p class="text" style="font-weight:bold; font: size 70px;;"> NJIT Room Search Registration Page</p>
         <input type="text" id="first_name" name="first_name" placeholder="Student Name" required/>
         <input type="text" id="last_name" name="last_name" placeholder="Student Last Name" required/>

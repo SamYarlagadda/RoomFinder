@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $channel = $connection->channel();
 
     // Declare a queue for us to send to
-    $channel->queue_declare('frontend_queue', false, false, false, false);
+    $channel->queue_declare('frontend_login', false, false, false, false);
 
     $username = $_POST["username"];
     $njit_id = $_POST["njit_id"];
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $msg = new AMQPMessage($message_json);
 
     // Publish the message
-    $channel->basic_publish($msg, '', 'frontend_queue');
+    $channel->basic_publish($msg, '', 'frontend_login');
 
     $channel->close();
     $connection->close();
