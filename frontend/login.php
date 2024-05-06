@@ -31,6 +31,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Publish the message
     $channel->basic_publish($msg, '', 'frontend_login');
 
+    // Declare the queue from which we're going to consume
+    $channel->queue_declare('login_response', false, false, false, false);
+
+    // Define a PHP Callback
+    $callback = function ($msg) {
+        if ($msg->body == 'successful') {
+            header('Location: home.php');
+            exit();
+        }
+    };
+
+    // Consume from the declared queue
+    $channel->basic_consume('login_response', '', false, true, false, false, $callback);
+
+    // Loop as long as the channel has callbacks
+    while (count($channel->callbacks)) {
+        $channel->wait(null, false, 5); // 5 seconds timeout
+    }
+
     $channel->close();
     $connection->close();
 }
@@ -45,6 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <body>    
     <div class="page-container">
       <div class="form">
+        <!-- Set the action attribute to '/login' -->
         <form class="login-form" action="" method="post">
           <p class="text" style="font-weight:bold; font: size 70px;;"> NJIT Room Search Login Page</p>
           <input type="text" id="username" name="username" placeholder="Username" required/>

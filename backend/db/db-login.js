@@ -19,9 +19,14 @@ amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connecti
             throw error1;
         }
 
-        let dbQueue = 'db_register';
+        let dbQueue = 'db_login';
+        let responseQueue = 'login_response';
 
         channel.assertQueue(dbQueue, {
+            durable: false
+        });
+
+        channel.assertQueue(responseQueue, {
             durable: false
         });
 
@@ -34,22 +39,18 @@ amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connecti
             let credentials = JSON.parse(msg.content.toString());
 
             // Query the database
-            pool.query('SELECT * FROM users WHERE username = ? AND njit_id = ?', [credentials.username, credentials.njit_id], (err, results) => {
+            pool.query('SELECT * FROM users WHERE username = ? AND njit_id = ? AND password = ?', [credentials.username, credentials.njit_id, credentials.password], (err, results) => {
                 if(err) {
                     console.log(err);
                 } else {
                     if(results.length > 0) {
-                        console.log('User exists');
+                        console.log('User exists and password is correct');
+                        // Send a 'successful' message to the 'login_response' queue
+                        channel.sendToQueue(responseQueue, Buffer.from('successful'));
                     } else {
-                        console.log('User does not exist');
-                        // Insert the new user into the database
-                        pool.query('INSERT INTO users SET ?', credentials, (err, res) => {
-                            if(err) {
-                                console.log('Error inserting new user:', err);
-                            } else {
-                                console.log('Inserted new user with id:', res.insertId);
-                            }
-                        });
+                        console.log('User does not exist or password is incorrect');
+                        // Optionally, you can send a 'failed' message if the user does not exist or the password is incorrect
+                        channel.sendToQueue(responseQueue, Buffer.from('failed'));
                     }
                 }
             });
