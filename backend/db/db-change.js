@@ -1,7 +1,6 @@
 const amqp = require('amqplib/callback_api');
 const mysql = require('mysql');
 
-// Create a new pool instance
 const pool = mysql.createPool({
     host: '10.241.130.162',
     user: 'rp855',
@@ -35,30 +34,25 @@ amqp.connect('amqp://ssy22:ssy22@10.241.141.94/ssy22', function(error0, connecti
         channel.consume(dbQueue, function(msg) {
             console.log(" [x] Received %s", msg.content.toString());
 
-            // Parse the message content to JSON
             let credentials = JSON.parse(msg.content.toString());
 
-            // Query the database
-            pool.query('SELECT * FROM users WHERE username = ? AND njit_id = ?', [credentials.username, credentials.njit_id], (err, results) => {
+            pool.query('SELECT * FROM users WHERE username = ? AND njit_id = ? AND password = ?', [credentials.username, credentials.njit_id, credentials.old_password], (err, results) => {
                 if(err) {
                     console.log(err);
                 } else {
                     if(results.length > 0) {
                         console.log('User exists');
-                        // Update the user's password
-                        pool.query('UPDATE users SET password = ? WHERE username = ? AND njit_id = ?', [credentials.new_password, credentials.username, credentials.njit_id], (err, results) => {
+                        pool.query('UPDATE users SET password = ? WHERE username = ? AND njit_id = ? AND password = ?', [credentials.new_password, credentials.username, credentials.njit_id, credentials.old_password], (err, results) => {
                             if(err) {
                                 console.log(err);
                             } else {
                                 console.log('Password updated successfully');
-                                // Send a 'successful' message to the 'login_response' queue
                                 channel.sendToQueue(responseQueue, Buffer.from('successful'));
                             }
                         });
                     } else {
-                        console.log('User does not exist');
-                        // Optionally, you can send a 'failed' message if the user does not exist
-                        channel.sendToQueue(responseQueue, Buffer.from('unsuccesful'));
+                        console.log('User does not exist or old password is incorrect');
+                        channel.sendToQueue(responseQueue, Buffer.from('unsuccessful'));
                     }
                 }
             });

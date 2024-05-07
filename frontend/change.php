@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Define a PHP Callback
         $callback = function ($msg) {
           if ($msg->body == 'successful') {
-              header('Location: login.php');
+              header('Location: home.php');
               exit();
           } else if ($msg->body == 'unsuccessful') {
               header('Location: unsuccessful-change.php');
