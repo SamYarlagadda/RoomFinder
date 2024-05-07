@@ -10,17 +10,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $channel = $connection->channel();
 
         // Declare a queue for us to send to
-        $channel->queue_declare('frontend_login', false, false, false, false);
+        $channel->queue_declare('frontend_change', false, false, false, false);
 
         $username = $_POST["username"];
         $njit_id = $_POST["njit_id"];
-        $password = $_POST["password"];
+        $new_password = $_POST["new_password"];
 
         // Prepare the message
         $message_data = array(
             'username' => $username,
             'njit_id' => $njit_id,
-            'password' => $password,
+            'new_password' => $new_password,
         );
 
         // Convert the message data to JSON
@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $msg = new AMQPMessage($message_json);
 
         // Publish the message
-        $channel->basic_publish($msg, '', 'frontend_login');
+        $channel->basic_publish($msg, '', 'frontend_change');
 
         // Declare the queue from which we're going to consume
         $channel->queue_declare('login_response', false, false, false, false);
@@ -38,16 +38,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Define a PHP Callback
         $callback = function ($msg) {
           if ($msg->body == 'successful') {
-              header('Location: home.php');
+              header('Location: login.php');
               exit();
           } else if ($msg->body == 'unsuccessful') {
-              header('Location: unsuccessful-login.php');
+              header('Location: unsuccessful-change.php');
               exit();
           }
         };
 
         // Consume from the declared queue
-        $channel->basic_consume('login_response', '', false, true, false, false, $callback);
+        $channel->basic_consume('change_response', '', false, true, false, false, $callback);
 
         // Loop as long as the channel has callbacks
         while (count($channel->callbacks)) {
@@ -61,13 +61,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         error_log($e->getMessage());
 
         // Redirect to 'unsuccessful.php' in case of an error
-        header('Location: unsuccessful-login.php');
+        header('Location: unsuccessful-change.php');
         exit();
     }
 }
 ?>
-
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -77,15 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <body>    
     <div class="page-container">
       <div class="form">
-        <!-- Set the action attribute to '/login' -->
-        <form class="login-form" action="" method="post">
-          <p class="text" style="font-weight:bold; font: size 70px;;"> NJIT Room Search Login Page</p>
+        <!-- Set the action attribute to the PHP script that will handle the form submission -->
+        <form class="change-password-form" action="" method="post">
+          <p class="text" style="font-weight:bold; font: size 70px;;"> NJIT Room Search Change Password Page</p>
           <input type="text" id="username" name="username" placeholder="Username" required/>
-          <input type="njit_id" id="njit_id" name="njit_id" placeholder="NJIT ID" required/>
-          <input type="password" id="password" name="password" placeholder="Password" required/>
-          <button type="submit">Login</button>
-          <p class="message">Not registered? <a href="register.php">Create an account</a></p>
-          <p class="message">Forgot password? <a href="change.php">Change password</a></p>
+          <input type="text" id="njit_id" name="njit_id" placeholder="NJIT ID" required/>
+          <input type="password" id="new_password" name="new_password" placeholder="New Password" required/>
+          <button type="submit">Change Password</button>
         </form>
       </div>
     </div>
