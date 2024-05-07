@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Define a PHP Callback
         $callback = function ($msg) {
           if ($msg->body == 'successful') {
-              header('Location: successful-register.php');
+              header('Location: home.php');
               exit();
           } else if ($msg->body == 'unsuccessful') {
               header('Location: unsuccessful-register.php');
@@ -87,10 +87,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <div class="form">
         <!-- Set the action attribute to the PHP script that will handle the form submission -->
         <form class="login-form" action ="" method="post">
-          <p class="text" style="font-weight:bold; font: size 70px;;"> NJIT Room Search Registration Page</p>
-          <input type="text" id="first_name" name="first_name" placeholder="Student Name" required/>
-          <input type="text" id="last_name" name="last_name" placeholder="Student Last Name" required/>
-          <input type="text" id="username" name="username" placeholder="Username" required/>
-          <input type="password" id="password" name="password" placeholder="Password" required/>
-          <input type="id" id="njit_id" name="njit_id" placeholder="NJIT ID" required/>
-          <input type="text" id="email" name
+        <p class="text" style="font-weight:bold; font: size 70px;;"> NJIT Room Search Registration Page</p>
+        <input type="text" id="first_name" name="first_name" placeholder="Student Name" required/>
+        <input type="text" id="last_name" name="last_name" placeholder="Student Last Name" required/>
+        <input type="text" id="username" name="username" placeholder="Username" required/>
+        <input type="password" id="password" name="password" placeholder="Password" required/>
+        <input type="id" id="njit_id" name="njit_id" placeholder="NJIT ID" required/>
+        <input type="text" id="email" name="email" placeholder="Email address" required/>
+        <input type="date" id="dob" name="dob" placeholder="Date of Birth" required/>
+        <input type="number" id="phone_number" name="phone_number" placeholder="Phone Number" required/>
+        <button>Create</button>
+        <p class="message">Already registered? <a href="index.html">Sign In</a></p>
+      </form>   

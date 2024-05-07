@@ -60,3 +60,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="mystyle.css">
+  </head>
+  <body>    
+    <div class="page-container">
+      <div class="form">
+        <form class="change-password-form" action="" method="post">
+          <p class="text" style="font-weight:bold; font: size 70px;;"> NJIT Room Search Change Password Page</p>
+          <input type="text" id="username" name="username" placeholder="Username" required/>
+          <input type="text" id="njit_id" name="njit_id" placeholder="NJIT ID" required/>
+          <input type="password" id="old_password" name="old_password" placeholder="Old Password" required/>
+          <input type="password" id="new_password" name="new_password" placeholder="New Password" required/>
+          <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm New Password" required/>
+          <button type="submit">Change Password</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
