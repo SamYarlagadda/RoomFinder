@@ -99,19 +99,18 @@
     <div style="padding-left:16px">
       <h2>NJIT Room Search</h2>
       <p>Welcome to NJIT Room Searcher, this program can be used to find empty classrooms around the NJIT Campus</p>
-      <p>Hello World</p>
     </div>
     <div class="dropdown">
       <button onclick="myFunction()" class="dropbtn">Pick Building Name</button>
       <div id="myDropdown" class="dropdown-content">
         <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-        <a href="#CKB">Central King Building (CKB)</a>
-        <a href="#CTR">Campus Center (CTR)</a>
-        <a href="#KUPF">Kupfrian Hall (KUPF)</a>
-        <a href="#GITC">Guttenberg Information Technologies Center (GITC)</a>
-        <a href="#TIER">Tiernan Hall (TIER)</a>
-        <a href="#FENS">Fenster Hall (FENS)</a>
-        <a href="#CULM">Cullimore Hall (CULM)</a>
+        <a href="ckb.php">Central King Building (CKB)</a>
+        <a href="ctr.php">Campus Center (CTR)</a>
+        <a href="kupf.php">Kupfrian Hall (KUPF)</a>
+        <a href="gitc.php">Guttenberg Information Technologies Center (GITC)</a>
+        <a href="tier.php">Tiernan Hall (TIER)</a>
+        <a href="fens.php">Fenster Hall (FENS)</a>
+        <a href="culm.php">Cullimore Hall (CULM)</a>
       </div>
     </div>
     <script>
