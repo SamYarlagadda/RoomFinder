@@ -3,7 +3,7 @@ const mysql = require('mysql');
 
 // Create a new pool instance
 const pool = mysql.createPool({
-    host: '10.241.100.23',
+    host: '10.241.130.162',
     user: 'rp855',
     password: 'rp855',
     database: 'RoomFinderDB',
