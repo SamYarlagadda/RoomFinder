@@ -2,7 +2,7 @@ const amqp = require('amqplib/callback_api');
 const mysql = require('mysql');
 
 const pool = mysql.createPool({
-    host: '10.241.130.162',
+    host: '10.241.214.202',
     user: 'rp855',
     password: 'rp855',
     database: 'RoomFinderDB',

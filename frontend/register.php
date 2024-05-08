@@ -11,7 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Declare a queue for us to send to
         $channel->queue_declare('frontend_register', false, false, false, false);
-
         $first_name = $_POST["first_name"];
         $last_name = $_POST["last_name"];
         $username = $_POST["username"];

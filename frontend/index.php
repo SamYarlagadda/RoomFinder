@@ -1,8 +1,3 @@
-<?php
-$output = shell_exec('python3 hello.py');
-echo $output;
-?>
-
 <!doctype html>
 <html lang="en">
   <head>
