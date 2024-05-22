@@ -41,9 +41,9 @@ def read_csv_files(directory: str):
         html = html.replace('<table', '<table style="border:1px solid black; border-collapse:collapse;"')  # Add some CSS to the HTML
         html = html.replace('<th', '<th style="background-color: #4CAF50; color: white; border:1px solid black; padding:5px;"')  # Add some CSS to the HTML
         html = html.replace('<td', '<td style="border:1px solid black; padding:5px;"')  # Add some CSS to the HTML
-        with open('schedule.html', 'w') as f:
+        with open('ckb-schedule.html', 'w') as f:
             f.write(html)  # Write the HTML to a file
-        webbrowser.open('schedule.html', new=2)  # Open the HTML file in a new browser window
+        webbrowser.open('ckb-schedule.html', new=2)  # Open the HTML file in a new browser window
     except Exception as e:
         print(f"Error occurred: {e}")
 

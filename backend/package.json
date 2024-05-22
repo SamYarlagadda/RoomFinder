@@ -15,8 +15,16 @@
     "pg": "^8.11.3"
   },
   "scripts": {
-    "db:generate": "drizzle-kit generate:pg --schema ./db/schema.ts --out=./db/migrations",
-    "db:migrate": "npm run ./db/migrate.ts"
+    "start": "npm-run-all --parallel login-receive login-send db-login register-receive register-send db-register change-receive change-send db-change",
+    "login-receive": "node login-receive",
+    "login-send": "node login-send",
+    "db-login": "cd db && node db-login",
+    "register-receive": "node register-receive",
+    "register-send": "node register-send",
+    "db-register": "cd db && node db-register",
+    "change-receive": "node change-receive",
+    "change-send": "node change-send",
+    "db-change": "cd db && node db-change"
   },
   "name": "backend",
   "version": "1.0.0",
@@ -26,6 +34,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "drizzle-kit": "^0.20.14"
+    "drizzle-kit": "^0.20.14",
+    "npm-run-all": "^4.1.5"
   }
 }
